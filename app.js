@@ -115,6 +115,7 @@ const exportLibraryButton = document.querySelector("#exportLibrary");
 const importLibraryInput = document.querySelector("#importLibrary");
 const backupStatus = document.querySelector("#backupStatus");
 const themeToggle = document.querySelector("#themeToggle");
+const resetLibraryButton = document.querySelector("#resetLibrary");
 
 function applyTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -987,7 +988,9 @@ importLibraryInput.addEventListener("change", async () => {
   }
 });
 
-document.querySelector("#resetDemo").addEventListener("click", () => {
+resetLibraryButton.addEventListener("click", () => {
+  const confirmed = window.confirm("Reset the GoodShow library stored in this browser? This cannot be undone unless you have exported a backup.");
+  if (!confirmed) return;
   state.library = {};
   saveLibrary();
   renderLibrary();
