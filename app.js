@@ -70,6 +70,7 @@ const STARTER_SHOWS = [
 
 const STORAGE_KEY = "goodshow-library-v2";
 const LEGACY_STORAGE_KEY = "goodshow-library-v1";
+const THEME_KEY = "goodshow-theme";
 const watchingWithOptions = ["", "Self", "Spouse", "Partner", "Friend", "Coworker", "Other"];
 const platformOptions = [
   "",
@@ -113,6 +114,16 @@ const libraryFilter = document.querySelector("#libraryFilter");
 const exportLibraryButton = document.querySelector("#exportLibrary");
 const importLibraryInput = document.querySelector("#importLibrary");
 const backupStatus = document.querySelector("#backupStatus");
+const themeToggle = document.querySelector("#themeToggle");
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === "dark" ? "L" : "D";
+  themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
+  localStorage.setItem(THEME_KEY, theme);
+}
+
+applyTheme(localStorage.getItem(THEME_KEY) || "light");
 
 function loadLibrary() {
   try {
@@ -945,6 +956,11 @@ document.querySelectorAll("[data-view-link]").forEach((link) => {
 });
 
 libraryFilter.addEventListener("change", renderLibrary);
+
+themeToggle.addEventListener("click", () => {
+  const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  applyTheme(currentTheme === "dark" ? "light" : "dark");
+});
 
 exportLibraryButton.addEventListener("click", () => {
   const date = new Date().toISOString().slice(0, 10);

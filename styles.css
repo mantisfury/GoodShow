@@ -13,6 +13,21 @@
   --shadow: 0 18px 42px rgba(29, 35, 36, 0.1);
 }
 
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #eef4ef;
+  --muted: #aebbb5;
+  --line: #33423d;
+  --paper: #111816;
+  --panel: #18221f;
+  --accent: #58b89f;
+  --accent-dark: #7bd4bd;
+  --gold: #d6a54a;
+  --rose: #d1747d;
+  --blue: #789ad3;
+  --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+}
+
 * {
   box-sizing: border-box;
 }
@@ -23,6 +38,11 @@ body {
   color: var(--ink);
   background: var(--paper);
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
 }
 
 button,
@@ -61,7 +81,7 @@ summary {
   gap: 28px;
   padding: 26px 18px;
   border-right: 1px solid var(--line);
-  background: #fbfcf8;
+  background: color-mix(in srgb, var(--panel) 62%, var(--paper));
 }
 
 .brand {
@@ -156,7 +176,7 @@ summary {
 .nav-link.active,
 .nav-link:hover {
   color: var(--accent-dark);
-  background: #e8f2ee;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .profile-panel {
@@ -185,7 +205,7 @@ summary {
   height: 8px;
   overflow: hidden;
   border-radius: 999px;
-  background: #edf0e9;
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
 }
 
 .mini-meter span {
@@ -211,6 +231,11 @@ main {
 
 .topbar {
   margin-bottom: 28px;
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .eyebrow {
@@ -309,7 +334,7 @@ h2 {
   padding: 12px 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.7);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
@@ -347,7 +372,7 @@ h2 {
 .segmented.active {
   border-color: var(--accent);
   color: var(--accent-dark);
-  background: #e8f2ee;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .results-grid {
@@ -374,7 +399,7 @@ h2 {
 }
 
 .poster {
-  background-color: #d9ddd4;
+  background-color: color-mix(in srgb, var(--muted) 20%, transparent);
   background-position: center;
   background-size: cover;
 }
@@ -467,7 +492,7 @@ h2 {
   padding: 14px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
 }
 
 .backup-panel h3 {
@@ -564,7 +589,7 @@ h2 {
   aspect-ratio: 2 / 3;
   min-height: 138px;
   border-radius: 8px;
-  background-color: #d9ddd4;
+  background-color: color-mix(in srgb, var(--muted) 20%, transparent);
   background-position: center;
   background-size: cover;
 }
@@ -606,7 +631,7 @@ h2 {
   min-height: 44px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: #fff;
+  background: var(--panel);
   color: var(--ink);
   padding: 0 10px;
 }
@@ -658,7 +683,7 @@ h2 {
   height: 58px;
   place-items: center;
   border-radius: 999px;
-  background: conic-gradient(var(--accent) var(--progress), #edf0e9 0);
+  background: conic-gradient(var(--accent) var(--progress), color-mix(in srgb, var(--muted) 20%, transparent) 0);
 }
 
 .progress-donut::before {
@@ -716,7 +741,7 @@ h2 {
 .season-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
-  background: rgba(247, 248, 243, 0.72);
+  background: color-mix(in srgb, var(--paper) 78%, var(--panel));
 }
 
 .season-panel summary {
@@ -837,7 +862,7 @@ h2 {
   height: 14px;
   overflow: hidden;
   border-radius: 999px;
-  background: #edf0e9;
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
 }
 
 .watched-bar {
@@ -845,7 +870,7 @@ h2 {
 }
 
 .remaining-bar {
-  background: #d9ddd4;
+  background: color-mix(in srgb, var(--muted) 24%, transparent);
 }
 
 .show-progress-value {
@@ -865,7 +890,7 @@ h2 {
   height: 12px;
   overflow: hidden;
   border-radius: 999px;
-  background: #edf0e9;
+  background: color-mix(in srgb, var(--muted) 18%, transparent);
 }
 
 .bar-track span {
@@ -880,7 +905,7 @@ h2 {
   border: 1px dashed var(--line);
   border-radius: 8px;
   color: var(--muted);
-  background: rgba(255, 255, 255, 0.58);
+  background: color-mix(in srgb, var(--panel) 68%, transparent);
 }
 
 .sr-only {
@@ -939,6 +964,10 @@ h2 {
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+
+  .topbar-actions {
+    align-self: stretch;
   }
 
   .topbar {
