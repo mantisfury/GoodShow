@@ -75,6 +75,7 @@ summary {
 }
 
 .brand-mark {
+  position: relative;
   display: grid;
   width: 34px;
   height: 34px;
@@ -82,6 +83,57 @@ summary {
   border-radius: 8px;
   background: var(--accent);
   color: #fff;
+}
+
+.brand-mark::before,
+.brand-mark::after {
+  position: absolute;
+  top: 3px;
+  width: 8px;
+  height: 2px;
+  border-radius: 999px;
+  background: #fff;
+  content: "";
+}
+
+.brand-mark::before {
+  left: 9px;
+  transform: rotate(-32deg);
+}
+
+.brand-mark::after {
+  right: 9px;
+  transform: rotate(32deg);
+}
+
+.tv-face {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+  width: 22px;
+  height: 18px;
+  margin-top: 4px;
+  padding: 5px 5px 4px;
+  border: 2px solid #fff;
+  border-radius: 5px;
+}
+
+.tv-eye {
+  width: 4px;
+  height: 4px;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.tv-smile {
+  position: absolute;
+  left: 7px;
+  bottom: 3px;
+  width: 8px;
+  height: 4px;
+  border-bottom: 2px solid #fff;
+  border-radius: 0 0 999px 999px;
 }
 
 .nav-list {
