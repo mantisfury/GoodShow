@@ -92,6 +92,9 @@ const searchForm = document.querySelector("#searchForm");
 const searchInput = document.querySelector("#searchInput");
 const libraryList = document.querySelector("#libraryList");
 const libraryFilter = document.querySelector("#libraryFilter");
+const exportLibraryButton = document.querySelector("#exportLibrary");
+const importLibraryInput = document.querySelector("#importLibrary");
+const backupStatus = document.querySelector("#backupStatus");
 
 function loadLibrary() {
   try {
@@ -116,6 +119,63 @@ function normalizeLibraryItem(id, item) {
     watchedEpisodes: item.watchedEpisodes || [],
     episodes: item.episodes || []
   };
+}
+
+function setBackupStatus(message) {
+  backupStatus.textContent = message;
+}
+
+function libraryBackupPayload() {
+  return {
+    app: "goodshow",
+    version: 1,
+    exportedAt: new Date().toISOString(),
+    items: state.library
+  };
+}
+
+function downloadJson(filename, payload) {
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  document.body.append(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function parseImportedLibrary(payload) {
+  const items = payload?.app === "goodshow" && payload.items ? payload.items : payload;
+  if (!items || typeof items !== "object" || Array.isArray(items)) {
+    throw new Error("Import file does not look like a GoodShow library backup.");
+  }
+
+  return Object.fromEntries(Object.entries(items).map(([id, item]) => [id, normalizeLibraryItem(id, item)]));
+}
+
+function mergeLibraries(current, incoming) {
+  const merged = { ...current };
+  Object.entries(incoming).forEach(([id, incomingItem]) => {
+    const existing = merged[id];
+    if (!existing) {
+      merged[id] = incomingItem;
+      return;
+    }
+
+    merged[id] = {
+      ...incomingItem,
+      ...existing,
+      watchedEpisodes: [...new Set([...(incomingItem.watchedEpisodes || []), ...(existing.watchedEpisodes || [])])],
+      episodes: existing.episodes?.length ? existing.episodes : incomingItem.episodes || [],
+      notes: existing.notes || incomingItem.notes || "",
+      rating: existing.rating || incomingItem.rating || "",
+      watchingWith: existing.watchingWith || incomingItem.watchingWith || "",
+      watchingWithCustom: existing.watchingWithCustom || incomingItem.watchingWithCustom || ""
+    };
+  });
+  return merged;
 }
 
 function stripHtml(value = "") {
@@ -659,6 +719,31 @@ document.querySelectorAll("[data-view-link]").forEach((link) => {
 });
 
 libraryFilter.addEventListener("change", renderLibrary);
+
+exportLibraryButton.addEventListener("click", () => {
+  const date = new Date().toISOString().slice(0, 10);
+  downloadJson(`goodshow-library-${date}.json`, libraryBackupPayload());
+  setBackupStatus("Export started. Save the JSON file somewhere you can find it.");
+});
+
+importLibraryInput.addEventListener("change", async () => {
+  const file = importLibraryInput.files?.[0];
+  if (!file) return;
+
+  try {
+    const imported = parseImportedLibrary(JSON.parse(await file.text()));
+    const mode = document.querySelector("input[name='importMode']:checked")?.value || "merge";
+    state.library = mode === "replace" ? imported : mergeLibraries(state.library, imported);
+    saveLibrary();
+    renderLibrary();
+    renderStats();
+    setBackupStatus(`${Object.keys(imported).length} title${Object.keys(imported).length === 1 ? "" : "s"} imported using ${mode} mode.`);
+  } catch (error) {
+    setBackupStatus(error.message || "Import failed. Try another JSON backup file.");
+  } finally {
+    importLibraryInput.value = "";
+  }
+});
 
 document.querySelector("#resetDemo").addEventListener("click", () => {
   state.library = {};

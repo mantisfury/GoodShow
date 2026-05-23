@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>goodshow</title>
-    <link rel="stylesheet" href="styles.css?v=6" />
+    <link rel="stylesheet" href="styles.css?v=7" />
   </head>
   <body>
     <div class="app-shell">
@@ -87,6 +87,23 @@
               <option value="paused">Paused</option>
             </select>
           </div>
+          <section class="backup-panel" aria-label="Library backup controls">
+            <div>
+              <h3>Backup and transfer</h3>
+              <p>Export a JSON backup, then import it on another device or merge it into another person's library.</p>
+            </div>
+            <div class="backup-actions">
+              <button type="button" id="exportLibrary">Export library</button>
+              <label class="import-button" for="importLibrary">Import file</label>
+              <input id="importLibrary" type="file" accept="application/json,.json" />
+            </div>
+            <fieldset class="import-mode">
+              <legend>Import mode</legend>
+              <label><input type="radio" name="importMode" value="merge" checked /> Merge with current library</label>
+              <label><input type="radio" name="importMode" value="replace" /> Replace current library</label>
+            </fieldset>
+            <p class="backup-status" id="backupStatus" role="status" aria-live="polite"></p>
+          </section>
           <div class="library-list" id="libraryList"></div>
         </section>
 
@@ -142,6 +159,6 @@
       </article>
     </template>
 
-    <script src="app.js?v=6" type="module"></script>
+    <script src="app.js?v=7" type="module"></script>
   </body>
 </html>
