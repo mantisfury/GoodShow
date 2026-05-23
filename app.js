@@ -135,6 +135,7 @@ function normalizeLibraryItem(id, item) {
     watchingWithCustom: item.watchingWithCustom || "",
     platform: item.platform || "",
     platformCustom: item.platformCustom || "",
+    relatedTitles: item.relatedTitles || "",
     watchedEpisodes: item.watchedEpisodes || [],
     episodes: item.episodes || []
   };
@@ -193,7 +194,8 @@ function mergeLibraries(current, incoming) {
       watchingWith: existing.watchingWith || incomingItem.watchingWith || "",
       watchingWithCustom: existing.watchingWithCustom || incomingItem.watchingWithCustom || "",
       platform: existing.platform || incomingItem.platform || "",
-      platformCustom: existing.platformCustom || incomingItem.platformCustom || ""
+      platformCustom: existing.platformCustom || incomingItem.platformCustom || "",
+      relatedTitles: existing.relatedTitles || incomingItem.relatedTitles || ""
     };
   });
   return merged;
@@ -355,6 +357,7 @@ async function addToLibrary(item, shelf) {
     watchingWithCustom: existing.watchingWithCustom || "",
     platform: existing.platform || item.suggestedPlatform || "",
     platformCustom: existing.platformCustom || "",
+    relatedTitles: existing.relatedTitles || "",
     watchedEpisodes: existing.watchedEpisodes || [],
     episodes: existing.episodes || [],
     addedAt: existing.addedAt || new Date().toISOString()
@@ -698,12 +701,18 @@ function renderLibrary() {
     notes.value = item.notes;
     notes.setAttribute("aria-label", `Notes for ${item.title}`);
 
+    const relatedTitles = document.createElement("textarea");
+    relatedTitles.dataset.field = "relatedTitles";
+    relatedTitles.placeholder = "Related titles, spinoffs, specials, or movies...";
+    relatedTitles.value = item.relatedTitles || "";
+    relatedTitles.setAttribute("aria-label", `Related titles for ${item.title}`);
+
     const removeButton = document.createElement("button");
     removeButton.type = "button";
     removeButton.dataset.action = "remove";
     removeButton.textContent = "Remove from library";
 
-    controls.append(shelfSelect, ratingInput, createWatchingWithControls(item), createPlatformControls(item), notes, removeButton);
+    controls.append(shelfSelect, ratingInput, createWatchingWithControls(item), createPlatformControls(item), relatedTitles, notes, removeButton);
     row.append(detail, controls);
 
     row.querySelectorAll("[data-field]").forEach((field) => {
