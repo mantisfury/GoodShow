@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>goodshow</title>
+    <link rel="stylesheet" href="styles.css?v=5" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Primary">
+        <a class="brand" href="#discover" aria-label="goodshow home">
+          <span class="brand-mark">g</span>
+          <span>goodshow</span>
+        </a>
+
+        <nav class="nav-list" aria-label="Views">
+          <a class="nav-link active" href="#discover" data-view-link="discover">
+            <span aria-hidden="true">?</span>
+            <span>Discover</span>
+          </a>
+          <a class="nav-link" href="#library" data-view-link="library">
+            <span aria-hidden="true">#</span>
+            <span>Library</span>
+          </a>
+          <a class="nav-link" href="#stats" data-view-link="stats">
+            <span aria-hidden="true">%</span>
+            <span>Stats</span>
+          </a>
+        </nav>
+
+        <section class="profile-panel" aria-label="Profile summary">
+          <div>
+            <span class="eyebrow">This year</span>
+            <strong id="sidebarCompleted">0 completed</strong>
+          </div>
+          <div class="mini-meter" aria-hidden="true"><span id="sidebarMeter"></span></div>
+          <p id="sidebarFocus">Start by adding a show or movie to your watchlist.</p>
+        </section>
+      </aside>
+
+      <main>
+        <header class="topbar">
+          <div>
+            <p class="eyebrow">Track what you watch, remember why it mattered</p>
+            <h1>goodshow</h1>
+          </div>
+          <button class="icon-button" id="resetDemo" type="button" title="Reset demo data" aria-label="Reset demo data">R</button>
+        </header>
+
+        <section class="view active" id="discover-view" aria-labelledby="discover-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="discover-title">Discover</h2>
+              <p>Search shows through TVMaze and movies through Wikidata, then add titles to your shelves.</p>
+            </div>
+          </div>
+
+          <form class="search-bar" id="searchForm">
+            <label class="sr-only" for="searchInput">Search for a show or movie</label>
+            <input id="searchInput" name="query" type="search" placeholder="Search Severance, Arrival, The Bear..." autocomplete="off" />
+            <button type="submit">Search</button>
+          </form>
+
+          <div class="toolbar" aria-label="Filters">
+            <button class="segmented active" type="button" data-filter="all">All</button>
+            <button class="segmented" type="button" data-filter="show">Shows</button>
+            <button class="segmented" type="button" data-filter="movie">Movies</button>
+          </div>
+
+          <div class="source-note">No movie API key is required. Movie results come from Wikidata, so they are intentionally lighter than TMDB or OMDb.</div>
+
+          <div class="results-grid" id="resultsGrid" aria-live="polite"></div>
+        </section>
+
+        <section class="view" id="library-view" aria-labelledby="library-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="library-title">Library</h2>
+              <p>Your personal shelves, ratings, notes, watch partners, and episodes.</p>
+            </div>
+            <select id="libraryFilter" aria-label="Filter library by shelf">
+              <option value="all">All shelves</option>
+              <option value="watchlist">Watchlist</option>
+              <option value="watching">Watching</option>
+              <option value="completed">Completed</option>
+              <option value="paused">Paused</option>
+            </select>
+          </div>
+          <div class="library-list" id="libraryList"></div>
+        </section>
+
+        <section class="view" id="stats-view" aria-labelledby="stats-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="stats-title">Stats</h2>
+              <p>A reading-graph style view of your watch life.</p>
+            </div>
+          </div>
+          <div class="stats-grid">
+            <article class="stat-card">
+              <span class="stat-value" id="statTotal">0</span>
+              <span class="stat-label">tracked titles</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value" id="statCompleted">0</span>
+              <span class="stat-label">completed</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value" id="statAverage">-</span>
+              <span class="stat-label">average rating</span>
+            </article>
+            <article class="stat-card">
+              <span class="stat-value" id="statHours">0h</span>
+              <span class="stat-label">estimated time watched</span>
+            </article>
+          </div>
+          <div class="chart-panel">
+            <h3>Shelf balance</h3>
+            <div class="bar-chart" id="shelfChart"></div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <template id="resultCardTemplate">
+      <article class="title-card">
+        <div class="poster"></div>
+        <div class="card-body">
+          <div>
+            <div class="card-kicker"></div>
+            <h3></h3>
+            <p class="meta"></p>
+          </div>
+          <p class="summary"></p>
+          <div class="card-actions">
+            <button type="button" data-action="watchlist">Watchlist</button>
+            <button type="button" data-action="watching">Watching</button>
+            <button type="button" data-action="completed">Completed</button>
+          </div>
+        </div>
+      </article>
+    </template>
+
+    <script src="app.js?v=5" type="module"></script>
+  </body>
+</html>
