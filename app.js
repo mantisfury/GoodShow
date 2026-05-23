@@ -99,6 +99,7 @@ const shelfLabels = {
 const state = {
   query: "",
   filter: "all",
+  libraryTypeFilter: "all",
   results: [...STARTER_SHOWS, ...SEEDED_MOVIES],
   library: loadLibrary()
 };
@@ -631,6 +632,7 @@ function renderLibrary() {
   const selectedShelf = libraryFilter.value;
   const items = Object.values(state.library)
     .filter((item) => selectedShelf === "all" || item.shelf === selectedShelf)
+    .filter((item) => state.libraryTypeFilter === "all" || item.type === state.libraryTypeFilter)
     .sort((a, b) => a.title.localeCompare(b.title));
 
   libraryList.innerHTML = "";
@@ -793,6 +795,16 @@ document.querySelectorAll("[data-filter]").forEach((button) => {
       filterButton.classList.toggle("active", filterButton === button);
     });
     renderResults();
+  });
+});
+
+document.querySelectorAll("[data-library-type]").forEach((button) => {
+  button.addEventListener("click", () => {
+    state.libraryTypeFilter = button.dataset.libraryType;
+    document.querySelectorAll("[data-library-type]").forEach((filterButton) => {
+      filterButton.classList.toggle("active", filterButton === button);
+    });
+    renderLibrary();
   });
 });
 

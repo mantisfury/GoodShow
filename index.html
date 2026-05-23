@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>goodshow</title>
-    <link rel="stylesheet" href="styles.css?v=9" />
+    <link rel="stylesheet" href="styles.css?v=10" />
   </head>
   <body>
     <div class="app-shell">
@@ -87,6 +87,11 @@
               <option value="paused">Paused</option>
             </select>
           </div>
+          <div class="toolbar library-type-filter" aria-label="Library type filters">
+            <button class="segmented active" type="button" data-library-type="all">All</button>
+            <button class="segmented" type="button" data-library-type="show">Shows</button>
+            <button class="segmented" type="button" data-library-type="movie">Movies</button>
+          </div>
           <section class="backup-panel" aria-label="Library backup controls">
             <div>
               <h3>Backup and transfer</h3>
@@ -159,6 +164,6 @@
       </article>
     </template>
 
-    <script src="app.js?v=9" type="module"></script>
+    <script src="app.js?v=10" type="module"></script>
   </body>
 </html>
