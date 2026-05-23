@@ -37,6 +37,15 @@ select {
   cursor: pointer;
 }
 
+button,
+a,
+input,
+select,
+textarea,
+summary {
+  touch-action: manipulation;
+}
+
 .app-shell {
   display: grid;
   grid-template-columns: 264px minmax(0, 1fr);
@@ -224,7 +233,7 @@ h2 {
 .search-bar button,
 .card-actions button,
 .library-controls button {
-  min-height: 42px;
+  min-height: 44px;
   border: 0;
   border-radius: 8px;
   background: var(--accent);
@@ -367,7 +376,7 @@ h2 {
 }
 
 .card-actions button {
-  min-height: 36px;
+  min-height: 38px;
   padding: 0 10px;
   font-size: 13px;
   line-height: 1.1;
@@ -446,7 +455,7 @@ h2 {
 .library-controls textarea,
 .section-heading select {
   width: 100%;
-  min-height: 38px;
+  min-height: 44px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fff;
@@ -507,7 +516,7 @@ h2 {
 .episode-list {
   display: grid;
   gap: 8px;
-  max-height: 300px;
+  max-height: min(420px, 55vh);
   overflow: auto;
   padding-right: 4px;
 }
@@ -519,7 +528,8 @@ h2 {
 }
 
 .season-panel summary {
-  padding: 9px 10px;
+  min-height: 44px;
+  padding: 12px 10px;
   color: var(--ink);
   font-size: 14px;
   font-weight: 900;
@@ -533,7 +543,7 @@ h2 {
 }
 
 .season-actions button {
-  min-height: 32px;
+  min-height: 38px;
   padding: 0 10px;
   border: 0;
   border-radius: 8px;
@@ -558,7 +568,7 @@ h2 {
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  min-height: 32px;
+  min-height: 38px;
   color: var(--ink);
   line-height: 1.35;
 }
@@ -646,6 +656,7 @@ h2 {
     position: static;
     height: auto;
     gap: 16px;
+    padding: 16px 14px;
     border-right: 0;
     border-bottom: 1px solid var(--line);
   }
@@ -659,7 +670,6 @@ h2 {
   }
 
   .library-item,
-  .library-detail,
   .stats-grid {
     grid-template-columns: 1fr;
   }
@@ -671,26 +681,105 @@ h2 {
 
 @media (max-width: 560px) {
   main {
-    padding: 22px 14px 38px;
+    padding: 18px 12px 34px;
   }
 
   .topbar,
   .section-heading {
     align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .topbar {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 42px;
+  }
+
+  h2 {
+    font-size: 24px;
   }
 
   .search-bar,
-  .title-card,
   .library-controls {
     grid-template-columns: 1fr;
   }
 
+  .search-bar {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .toolbar {
+    gap: 6px;
+  }
+
+  .segmented {
+    min-height: 40px;
+  }
+
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .title-card {
+    grid-template-columns: 92px minmax(0, 1fr);
+    min-height: 0;
+  }
+
   .poster {
-    min-height: 260px;
+    min-height: 0;
+  }
+
+  .card-body {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .card-body h3 {
+    font-size: 17px;
+  }
+
+  .summary {
+    -webkit-line-clamp: 3;
   }
 
   .card-actions {
     grid-template-columns: 1fr;
+  }
+
+  .library-item {
+    padding: 12px;
+  }
+
+  .library-detail {
+    grid-template-columns: 78px minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .library-poster {
+    width: auto;
+    min-height: 117px;
+  }
+
+  .library-controls {
+    gap: 10px;
+  }
+
+  .episode-list {
+    max-height: 58vh;
+  }
+
+  .season-episodes {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid {
+    gap: 10px;
   }
 }
 
