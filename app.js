@@ -302,6 +302,7 @@ async function fetchEpisodes(item) {
       season: episode.season,
       number: episode.number,
       title: episode.name,
+      runtime: episode.runtime || item.runtime || 0,
       airdate: episode.airdate || ""
     }));
   } catch {
@@ -394,6 +395,9 @@ async function addToLibrary(item, shelf) {
 
   if (item.type === "show" && !state.library[item.id].episodes.length) {
     state.library[item.id].episodes = await fetchEpisodes(item);
+    if (state.library[item.id].shelf === "completed") {
+      state.library[item.id].watchedEpisodes = state.library[item.id].episodes.map((episode) => episode.id);
+    }
     saveLibrary();
     renderLibrary();
     renderStats();
@@ -768,13 +772,17 @@ function renderStats() {
   const completed = items.filter((item) => item.shelf === "completed");
   const rated = items.map((item) => Number(item.rating)).filter(Boolean);
   const watchedEpisodes = items.reduce((sum, item) => sum + (item.watchedEpisodes?.length || 0), 0);
-  const totalHours = Math.round(completed.reduce((sum, item) => sum + Number(item.runtime || 0), 0) / 60);
+  const totalTrackedEpisodes = items.reduce((sum, item) => sum + (item.episodes?.length || 0), 0);
+  const episodeProgress = totalTrackedEpisodes ? Math.round((watchedEpisodes / totalTrackedEpisodes) * 100) : 0;
+  const watchedMinutes = items.reduce((sum, item) => sum + watchedMinutesForItem(item), 0);
   const average = rated.length ? (rated.reduce((sum, rating) => sum + rating, 0) / rated.length).toFixed(1) : "-";
 
   document.querySelector("#statTotal").textContent = items.length;
   document.querySelector("#statCompleted").textContent = completed.length;
   document.querySelector("#statAverage").textContent = average;
-  document.querySelector("#statHours").textContent = `${totalHours}h`;
+  document.querySelector("#statHours").textContent = `${Math.round(watchedMinutes / 60)}h`;
+  document.querySelector("#statEpisodes").textContent = watchedEpisodes;
+  document.querySelector("#statEpisodeProgress").textContent = `${episodeProgress}%`;
   document.querySelector("#sidebarCompleted").textContent = `${completed.length} completed`;
   document.querySelector("#sidebarFocus").textContent = items.length
     ? `${items.filter((item) => item.shelf === "watching").length} currently watching, ${watchedEpisodes} episodes logged.`
@@ -795,6 +803,30 @@ function renderStats() {
       </div>
     `;
   }).join("");
+}
+
+function watchedMinutesForItem(item) {
+  if (item.type === "movie") {
+    return item.shelf === "completed" ? Number(item.runtime || 0) : 0;
+  }
+
+  if (item.type !== "show") return 0;
+
+  const episodes = item.episodes || [];
+  if (episodes.length) {
+    const watchedIds = new Set(item.watchedEpisodes || []);
+    if (watchedIds.size) {
+      return episodes
+        .filter((episode) => watchedIds.has(episode.id))
+        .reduce((sum, episode) => sum + Number(episode.runtime || item.runtime || 0), 0);
+    }
+
+    if (item.shelf === "completed") {
+      return episodes.reduce((sum, episode) => sum + Number(episode.runtime || item.runtime || 0), 0);
+    }
+  }
+
+  return item.shelf === "completed" ? Number(item.runtime || 0) : 0;
 }
 
 function setView(viewName) {
