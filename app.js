@@ -339,7 +339,32 @@ function renderResults() {
     summary.textContent = item.summary;
 
     card.querySelectorAll("[data-action]").forEach((button) => {
-      button.addEventListener("click", () => addToLibrary(item, button.dataset.action));
+      const existing = state.library[item.id];
+      if (existing?.shelf === button.dataset.action) {
+        button.textContent = "Added";
+        button.classList.add("added");
+      }
+
+      button.addEventListener("click", async () => {
+        const originalText = button.textContent;
+        button.disabled = true;
+        button.textContent = "Adding...";
+        await addToLibrary(item, button.dataset.action);
+        card.querySelectorAll("[data-action]").forEach((actionButton) => {
+          actionButton.classList.remove("added");
+          actionButton.disabled = false;
+          actionButton.textContent = shelfLabels[actionButton.dataset.action] || actionButton.dataset.action;
+        });
+        button.classList.add("added");
+        button.textContent = "Added";
+        window.setTimeout(() => {
+          button.textContent = "Added";
+          if (!state.library[item.id]) {
+            button.textContent = originalText;
+            button.classList.remove("added");
+          }
+        }, 900);
+      });
     });
 
     resultsGrid.append(card);

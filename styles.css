@@ -443,6 +443,15 @@ h2 {
   background: var(--gold);
 }
 
+.card-actions button.added {
+  background: var(--ink);
+  color: #fff;
+}
+
+.card-actions button:disabled {
+  opacity: 0.78;
+}
+
 .library-list {
   display: grid;
   gap: 12px;
