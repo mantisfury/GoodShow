@@ -71,6 +71,23 @@ const STARTER_SHOWS = [
 const STORAGE_KEY = "goodshow-library-v2";
 const LEGACY_STORAGE_KEY = "goodshow-library-v1";
 const watchingWithOptions = ["", "Self", "Spouse", "Partner", "Friend", "Coworker", "Other"];
+const platformOptions = [
+  "",
+  "DVD",
+  "Blu-ray",
+  "Crunchyroll",
+  "Netflix",
+  "HBO Max",
+  "Hulu",
+  "Disney+",
+  "Prime Video",
+  "Apple TV",
+  "Paramount+",
+  "Peacock",
+  "YouTube",
+  "Library",
+  "Other"
+];
 const shelves = ["watchlist", "watching", "completed", "paused"];
 const shelfLabels = {
   watchlist: "Watchlist",
@@ -116,6 +133,8 @@ function normalizeLibraryItem(id, item) {
     providerId,
     watchingWith: item.watchingWith || "",
     watchingWithCustom: item.watchingWithCustom || "",
+    platform: item.platform || "",
+    platformCustom: item.platformCustom || "",
     watchedEpisodes: item.watchedEpisodes || [],
     episodes: item.episodes || []
   };
@@ -172,7 +191,9 @@ function mergeLibraries(current, incoming) {
       notes: existing.notes || incomingItem.notes || "",
       rating: existing.rating || incomingItem.rating || "",
       watchingWith: existing.watchingWith || incomingItem.watchingWith || "",
-      watchingWithCustom: existing.watchingWithCustom || incomingItem.watchingWithCustom || ""
+      watchingWithCustom: existing.watchingWithCustom || incomingItem.watchingWithCustom || "",
+      platform: existing.platform || incomingItem.platform || "",
+      platformCustom: existing.platformCustom || incomingItem.platformCustom || ""
     };
   });
   return merged;
@@ -190,10 +211,12 @@ function titleSource(item) {
 
 function normalizeShow(result) {
   const show = result.show;
+  const suggestedPlatform = show.webChannel?.name || show.network?.name || "";
   return {
     id: `tvmaze-${show.id}`,
     providerId: show.id,
     source: "TVMaze",
+    suggestedPlatform,
     type: "show",
     title: show.name,
     year: show.premiered ? Number(show.premiered.slice(0, 4)) : "TBD",
@@ -330,6 +353,8 @@ async function addToLibrary(item, shelf) {
     notes: existing.notes || "",
     watchingWith: existing.watchingWith || "",
     watchingWithCustom: existing.watchingWithCustom || "",
+    platform: existing.platform || item.suggestedPlatform || "",
+    platformCustom: existing.platformCustom || "",
     watchedEpisodes: existing.watchedEpisodes || [],
     episodes: existing.episodes || [],
     addedAt: existing.addedAt || new Date().toISOString()
@@ -393,6 +418,54 @@ function createWatchingWithControls(item) {
   });
 
   wrapper.append(createFieldLabel("Watching with", select), custom);
+  return wrapper;
+}
+
+function createPlatformControls(item) {
+  const wrapper = document.createElement("div");
+  wrapper.className = "platform-field";
+
+  const select = document.createElement("select");
+  select.dataset.field = "platform";
+  select.setAttribute("aria-label", `Watching platform for ${item.title}`);
+  const options = [...platformOptions];
+  if (item.suggestedPlatform && !options.includes(item.suggestedPlatform)) {
+    options.splice(1, 0, item.suggestedPlatform);
+  }
+
+  options.forEach((optionValue) => {
+    const option = document.createElement("option");
+    option.value = optionValue;
+    option.textContent = optionValue || "Watching on...";
+    option.selected = item.platform === optionValue;
+    select.append(option);
+  });
+
+  const custom = document.createElement("input");
+  custom.dataset.field = "platformCustom";
+  custom.type = "text";
+  custom.placeholder = "Custom platform";
+  custom.value = item.platformCustom || "";
+  custom.hidden = item.platform !== "Other";
+  custom.setAttribute("aria-label", `Custom platform for ${item.title}`);
+
+  select.addEventListener("change", () => {
+    state.library[item.id].platform = select.value;
+    if (select.value !== "Other") {
+      state.library[item.id].platformCustom = "";
+    }
+    saveLibrary();
+    renderLibrary();
+    renderStats();
+  });
+
+  custom.addEventListener("change", () => {
+    state.library[item.id].platformCustom = custom.value;
+    saveLibrary();
+    renderStats();
+  });
+
+  wrapper.append(createFieldLabel("Watching on", select), custom);
   return wrapper;
 }
 
@@ -630,11 +703,11 @@ function renderLibrary() {
     removeButton.dataset.action = "remove";
     removeButton.textContent = "Remove from library";
 
-    controls.append(shelfSelect, ratingInput, createWatchingWithControls(item), notes, removeButton);
+    controls.append(shelfSelect, ratingInput, createWatchingWithControls(item), createPlatformControls(item), notes, removeButton);
     row.append(detail, controls);
 
     row.querySelectorAll("[data-field]").forEach((field) => {
-      if (field.dataset.field === "watchingWith" || field.dataset.field === "watchingWithCustom") return;
+      if (["watchingWith", "watchingWithCustom", "platform", "platformCustom"].includes(field.dataset.field)) return;
       field.addEventListener("change", () => {
         state.library[item.id][field.dataset.field] = field.value;
         saveLibrary();

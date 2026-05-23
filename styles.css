@@ -557,14 +557,16 @@ h2 {
   resize: vertical;
 }
 
-.watching-with {
+.watching-with,
+.platform-field {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 
-.watching-with input[hidden] {
+.watching-with input[hidden],
+.platform-field input[hidden] {
   display: none;
 }
 
