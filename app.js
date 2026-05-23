@@ -116,12 +116,20 @@ const importLibraryInput = document.querySelector("#importLibrary");
 const backupStatus = document.querySelector("#backupStatus");
 const themeToggle = document.querySelector("#themeToggle");
 const resetLibraryButton = document.querySelector("#resetLibrary");
+const themes = ["light", "pastel", "dark"];
+const themeLabels = {
+  light: "L",
+  pastel: "P",
+  dark: "D"
+};
 
 function applyTheme(theme) {
-  document.documentElement.dataset.theme = theme;
-  themeToggle.textContent = theme === "dark" ? "L" : "D";
-  themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
-  localStorage.setItem(THEME_KEY, theme);
+  const nextTheme = themes.includes(theme) ? theme : "light";
+  document.documentElement.dataset.theme = nextTheme;
+  themeToggle.textContent = themeLabels[nextTheme];
+  themeToggle.title = `Theme: ${nextTheme}. Click to change.`;
+  themeToggle.setAttribute("aria-label", `Current theme: ${nextTheme}. Click to change theme.`);
+  localStorage.setItem(THEME_KEY, nextTheme);
 }
 
 applyTheme(localStorage.getItem(THEME_KEY) || "light");
@@ -959,8 +967,9 @@ document.querySelectorAll("[data-view-link]").forEach((link) => {
 libraryFilter.addEventListener("change", renderLibrary);
 
 themeToggle.addEventListener("click", () => {
-  const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
-  applyTheme(currentTheme === "dark" ? "light" : "dark");
+  const currentTheme = document.documentElement.dataset.theme || "light";
+  const currentIndex = themes.indexOf(currentTheme);
+  applyTheme(themes[(currentIndex + 1) % themes.length]);
 });
 
 exportLibraryButton.addEventListener("click", () => {

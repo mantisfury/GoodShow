@@ -28,6 +28,21 @@
   --shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
 }
 
+:root[data-theme="pastel"] {
+  color-scheme: light;
+  --ink: #26312f;
+  --muted: #66736f;
+  --line: #d7dfd7;
+  --paper: #f3f6ee;
+  --panel: #fffdf7;
+  --accent: #6aa995;
+  --accent-dark: #3d7668;
+  --gold: #caa85d;
+  --rose: #c98288;
+  --blue: #7f9fc5;
+  --shadow: 0 16px 34px rgba(75, 88, 82, 0.1);
+}
+
 * {
   box-sizing: border-box;
 }
