@@ -642,6 +642,48 @@ h2 {
   padding-top: 12px;
 }
 
+.progress-donut-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 2px;
+}
+
+.progress-donut {
+  --progress: 0%;
+  position: relative;
+  display: grid;
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 999px;
+  background: conic-gradient(var(--accent) var(--progress), #edf0e9 0);
+}
+
+.progress-donut::before {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border-radius: 999px;
+  background: var(--panel);
+  content: "";
+}
+
+.progress-donut span {
+  position: relative;
+  z-index: 1;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.progress-donut-wrap p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .episode-panel summary {
   color: var(--accent-dark);
   font-weight: 900;
@@ -757,6 +799,59 @@ h2 {
 .bar-chart {
   display: grid;
   gap: 12px;
+}
+
+.show-progress-chart {
+  display: grid;
+  gap: 12px;
+}
+
+.show-progress-row {
+  display: grid;
+  grid-template-columns: minmax(120px, 220px) minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 12px;
+}
+
+.show-progress-label {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.show-progress-label strong,
+.show-progress-label span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.show-progress-label span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.stacked-track {
+  display: flex;
+  height: 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf0e9;
+}
+
+.watched-bar {
+  background: var(--accent);
+}
+
+.remaining-bar {
+  background: #d9ddd4;
+}
+
+.show-progress-value {
+  color: var(--muted);
+  font-weight: 900;
+  text-align: right;
 }
 
 .bar-row {
@@ -942,6 +1037,15 @@ h2 {
 
   .season-episodes {
     grid-template-columns: 1fr;
+  }
+
+  .show-progress-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .show-progress-value {
+    text-align: left;
   }
 
   .stats-grid {

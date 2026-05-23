@@ -657,6 +657,31 @@ function createEpisodeTracker(item) {
   return wrapper;
 }
 
+function createProgressDonut(item) {
+  const total = item.episodes?.length || 0;
+  if (item.type !== "show" || !total) return document.createDocumentFragment();
+
+  const watched = item.watchedEpisodes?.length || 0;
+  const percent = Math.round((watched / total) * 100);
+  const wrapper = document.createElement("div");
+  wrapper.className = "progress-donut-wrap";
+
+  const donut = document.createElement("div");
+  donut.className = "progress-donut";
+  donut.style.setProperty("--progress", `${percent}%`);
+  donut.setAttribute("aria-label", `${item.title} progress ${percent}%`);
+
+  const value = document.createElement("span");
+  value.textContent = `${percent}%`;
+  donut.append(value);
+
+  const label = document.createElement("p");
+  label.textContent = `${watched} watched, ${total - watched} left`;
+
+  wrapper.append(donut, label);
+  return wrapper;
+}
+
 function renderLibrary() {
   const selectedShelf = libraryFilter.value;
   const items = Object.values(state.library)
@@ -698,7 +723,7 @@ function renderLibrary() {
     title.textContent = item.title;
     meta.textContent = `${item.year} - ${item.genres.slice(0, 3).join(", ")} - ${item.runtime} min`;
     summary.textContent = item.summary;
-    copy.append(kicker, title, meta, summary);
+    copy.append(kicker, title, meta, summary, createProgressDonut(item));
     if (item.type === "show") copy.append(createEpisodeTracker(item));
     detail.append(poster, copy);
 
@@ -803,6 +828,8 @@ function renderStats() {
       </div>
     `;
   }).join("");
+
+  renderShowProgressChart(items);
 }
 
 function watchedMinutesForItem(item) {
@@ -827,6 +854,54 @@ function watchedMinutesForItem(item) {
   }
 
   return item.shelf === "completed" ? Number(item.runtime || 0) : 0;
+}
+
+function renderShowProgressChart(items) {
+  const chart = document.querySelector("#showProgressChart");
+  const shows = items
+    .filter((item) => item.type === "show" && item.episodes?.length)
+    .sort((a, b) => a.title.localeCompare(b.title));
+
+  if (!shows.length) {
+    chart.innerHTML = `<div class="empty-state">Add TVMaze-backed shows and open their episode lists to see progress here.</div>`;
+    return;
+  }
+
+  chart.innerHTML = "";
+  shows.forEach((show) => {
+    const total = show.episodes.length;
+    const watched = show.watchedEpisodes?.length || 0;
+    const remaining = Math.max(0, total - watched);
+    const percent = Math.round((watched / total) * 100);
+
+    const row = document.createElement("div");
+    row.className = "show-progress-row";
+
+    const label = document.createElement("div");
+    label.className = "show-progress-label";
+    const title = document.createElement("strong");
+    title.textContent = show.title;
+    const meta = document.createElement("span");
+    meta.textContent = `${watched} watched - ${remaining} left`;
+    label.append(title, meta);
+
+    const track = document.createElement("div");
+    track.className = "stacked-track";
+    const watchedBar = document.createElement("span");
+    watchedBar.className = "watched-bar";
+    watchedBar.style.width = `${percent}%`;
+    const remainingBar = document.createElement("span");
+    remainingBar.className = "remaining-bar";
+    remainingBar.style.width = `${100 - percent}%`;
+    track.append(watchedBar, remainingBar);
+
+    const value = document.createElement("span");
+    value.className = "show-progress-value";
+    value.textContent = `${percent}%`;
+
+    row.append(label, track, value);
+    chart.append(row);
+  });
 }
 
 function setView(viewName) {
