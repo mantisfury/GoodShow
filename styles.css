@@ -30,17 +30,17 @@
 
 :root[data-theme="pastel"] {
   color-scheme: light;
-  --ink: #26312f;
-  --muted: #66736f;
-  --line: #d7dfd7;
-  --paper: #f3f6ee;
-  --panel: #fffdf7;
-  --accent: #6aa995;
-  --accent-dark: #3d7668;
-  --gold: #caa85d;
-  --rose: #c98288;
-  --blue: #7f9fc5;
-  --shadow: 0 16px 34px rgba(75, 88, 82, 0.1);
+  --ink: #1d2d35;
+  --muted: #526a75;
+  --line: #9fb9c7;
+  --paper: #b9d3df;
+  --panel: #eaf4f6;
+  --accent: #4d8d8a;
+  --accent-dark: #235f69;
+  --gold: #b8944f;
+  --rose: #b97885;
+  --blue: #6389b8;
+  --shadow: 0 16px 34px rgba(29, 50, 59, 0.16);
 }
 
 * {
